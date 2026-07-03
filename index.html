@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Grievance Portal | जनशिकायत पोर्टल</title>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Premium Header Banner -->
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <!-- Fallback Shield Emblem using FontAwesome if image is not loaded -->
+                <div class="logo-icon" style="color: var(--accent-color); font-size: 2.2rem; margin-right: 0.5rem;">
+                    <i class="fa-solid fa-building-shield"></i>
+                </div>
+                <div class="title-group">
+                    <h1 id="header-title">UP POLICE PUBLIC GRIEVANCE PORTAL</h1>
+                    <span id="header-subtitle">जनशिकायत निवारण एवं अनुश्रवण प्रणाली</span>
+                </div>
+            </div>
+            <div class="user-nav">
+                <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">हिन्दी / Hindi</button>
+                <div class="profile-tag d-none" id="userProfileTag">
+                    <i class="fa-solid fa-user-shield"></i> <span id="profileRoleText">Role</span>
+                </div>
+                <button class="logout-btn d-none" id="logoutBtn" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-en="Logout" data-hi="लॉगआउट">Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <main>
+        
+        <!-- ==================== 1. LOGIN CONTAINER ==================== -->
+        <section id="loginSection" class="login-container">
+            <div class="login-header-text">
+                <h2 data-en="Police Grievance Redressal Portal" data-hi="पुलिस जनशिकायत निवारण पोर्टल">Police Grievance Redressal Portal</h2>
+                <p data-en="Select your login category to access the system" data-hi="सिस्टम में प्रवेश करने के लिए अपनी लॉगिन श्रेणी चुनें">Select your login category to access the system</p>
+            </div>
+            
+            <div class="login-cards-grid">
+                <!-- Card 1: Citizen -->
+                <div class="login-card" onclick="showLoginForm('citizen')">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 data-en="Citizen Login" data-hi="नागरिक लॉगिन">Citizen Login</h3>
+                    <p data-en="Lodge complaints and track status" data-hi="शिकायत दर्ज करें और स्थिति की जांच करें">Lodge complaints and track status</p>
+                </div>
+                
+                <!-- Card 2: SHO -->
+                <div class="login-card" onclick="showLoginForm('sho')">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 data-en="SHO Login" data-hi="थाना प्रभारी लॉगिन">SHO Login</h3>
+                    <p data-en="Review grievances & assign officers" data-hi="शिकायतों की समीक्षा करें और अधिकारी आवंटित करें">Review grievances & assign officers</p>
+                </div>
+
+                <!-- Card 3: IO -->
+                <div class="login-card" onclick="showLoginForm('io')">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-user-ninja"></i>
+                    </div>
+                    <h3 data-en="Investigating Officer" data-hi="जाँच अधिकारी लॉगिन">Investigating Officer</h3>
+                    <p data-en="Submit investigation reports" data-hi="जांच रिपोर्ट और विवरण सबमिट करें">Submit investigation reports</p>
+                </div>
+
+                <!-- Card 4: SP -->
+                <div class="login-card" onclick="showLoginForm('sp')">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <h3 data-en="SP Login" data-hi="पुलिस अधीक्षक लॉगिन">SP Login</h3>
+                    <p data-en="District-wide monitoring dashboard" data-hi="जिला स्तरीय समीक्षा एवं डैशबोर्ड">District-wide monitoring dashboard</p>
+                </div>
+            </div>
+
+            <!-- DYNAMIC LOGIN FORMS CONTAINER -->
+            <div id="loginFormsWrapper" class="mt-4 d-none">
+                <!-- Citizen Login Form -->
+                <div id="citizenLoginForm" class="form-card d-none">
+                    <h3 class="form-title" data-en="Citizen Access" data-hi="नागरिक पहुंच">Citizen Access</h3>
+                    <div class="form-group">
+                        <label for="citizenPhone" data-en="Mobile Number" data-hi="मोबाइल नंबर">Mobile Number</label>
+                        <input type="tel" id="citizenPhone" class="form-control" placeholder="Enter 10-digit mobile" required>
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAsCitizen()" data-en="Enter Portal" data-hi="पोर्टल में प्रवेश करें">Enter Portal</button>
+                    <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
+                </div>
+
+                <!-- SHO Login Form -->
+                <div id="shoLoginForm" class="form-card d-none">
+                    <h3 class="form-title" data-en="SHO Login" data-hi="थाना प्रभारी लॉगिन">SHO Login</h3>
+                    <div class="form-group">
+                        <label for="shoStationSelect" data-en="Select Police Station" data-hi="थाना चुनें">Select Police Station</label>
+                        <select id="shoStationSelect" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shoPassword" data-en="Password" data-hi="पासवर्ड">Password</label>
+                        <input type="password" id="shoPassword" class="form-control" value="admin123" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAsSHO()" data-en="Login" data-hi="लॉगिन करें">Login</button>
+                    <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
+                </div>
+
+                <!-- IO Login Form -->
+                <div id="ioLoginForm" class="form-card d-none">
+                    <h3 class="form-title" data-en="Investigating Officer Login" data-hi="जाँच अधिकारी लॉगिन">Investigating Officer Login</h3>
+                    <div class="form-group">
+                        <label for="ioSelect" data-en="Select Officer Name" data-hi="अधिकारी का नाम चुनें">Select Officer Name</label>
+                        <select id="ioSelect" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ioPassword" data-en="Password" data-hi="पासवर्ड">Password</label>
+                        <input type="password" id="ioPassword" class="form-control" value="io123" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAsIO()" data-en="Login" data-hi="लॉगिन करें">Login</button>
+                    <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
+                </div>
+
+                <!-- SP Login Form -->
+                <div id="spLoginForm" class="form-card d-none">
+                    <h3 class="form-title" data-en="Superintendent of Police Login" data-hi="पुलिस अधीक्षक लॉगिन">Superintendent of Police Login</h3>
+                    <div class="form-group">
+                        <label for="spUsername" data-en="SP Username" data-hi="यूज़रनेम">Username</label>
+                        <input type="text" id="spUsername" class="form-control" value="sp_district" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="spPassword" data-en="Password" data-hi="पासवर्ड">Password</label>
+                        <input type="password" id="spPassword" class="form-control" value="sp123" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAsSP()" data-en="Login" data-hi="लॉगिन करें">Login</button>
+                    <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. CITIZEN DASHBOARD ==================== -->
+        <section id="citizenDashboard" class="d-none">
+            <div class="panel-header">
+                <h2 data-en="Citizen Grievance Panel" data-hi="नागरिक शिकायत पैनल">Citizen Grievance Panel</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-accent btn-inline" onclick="showCitizenSection('lodge')">
+                        <i class="fa-solid fa-plus"></i> <span data-en="Lodge New Grievance" data-hi="नई शिकायत दर्ज करें">Lodge New Grievance</span>
+                    </button>
+                    <button class="btn btn-outline btn-inline" onclick="showCitizenSection('list')">
+                        <i class="fa-solid fa-list-check"></i> <span data-en="My Complaints & Tracking" data-hi="मेरी शिकायतें एवं ट्रैकिंग">My Complaints & Tracking</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel A: Lodge Complaint Form -->
+            <div id="citizenLodgePanel" class="form-card" style="max-width: 800px; margin: 0 auto;">
+                <h3 class="form-title" data-en="New Grievance Form" data-hi="नई शिकायत पंजीकरण फॉर्म">New Grievance Form</h3>
+                
+                <div class="detail-grid">
+                    <div style="grid-column: span 2;">
+                        <h4 class="mb-4" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;" data-en="Personal Details" data-hi="व्यक्तिगत विवरण">Personal Details</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="compName" data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+                        <input type="text" id="compName" class="form-control" placeholder="E.g., Ramesh Kumar" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="compEmail" data-en="Email Address (Optional)" data-hi="ईमेल (वैकल्पिक)">Email Address</label>
+                        <input type="email" id="compEmail" class="form-control" placeholder="E.g., name@example.com">
+                    </div>
+                </div>
+
+                <div class="detail-grid mt-4">
+                    <div style="grid-column: span 2;">
+                        <h4 class="mb-4" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;" data-en="Grievance Incident Details" data-hi="शिकायत घटना का विवरण">Grievance Incident Details</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="compStation" data-en="Concerned Police Station" data-hi="सम्बन्धित थाना">Concerned Police Station</label>
+                        <select id="compStation" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="compCategory" data-en="Crime/Grievance Category" data-hi="शिकायत श्रेणी">Grievance Category</label>
+                        <select id="compCategory" class="form-control">
+                            <option value="Theft / चोरी" data-en="Theft" data-hi="चोरी">Theft</option>
+                            <option value="Cyber Crime / साइबर अपराध" data-en="Cyber Crime" data-hi="साइबर अपराध">Cyber Crime</option>
+                            <option value="Physical Assault / मारपीट" data-en="Physical Assault" data-hi="मारपीट">Physical Assault</option>
+                            <option value="Missing Person / गुमशुदगी" data-en="Missing Person" data-hi="गुमशुदगी">Missing Person</option>
+                            <option value="Harassment / उत्पीड़न" data-en="Harassment" data-hi="उत्पीड़न">Harassment</option>
+                            <option value="Other / अन्य" data-en="Other" data-hi="अन्य">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="compTitle" data-en="Subject Headline" data-hi="शिकायत का मुख्य विषय">Subject Headline</label>
+                        <input type="text" id="compTitle" class="form-control" placeholder="Short description of incident" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="compDate" data-en="Date & Time of Incident" data-hi="घटना की तिथि एवं समय">Date & Time of Incident</label>
+                        <input type="datetime-local" id="compDate" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="compDesc" data-en="Detailed Description" data-hi="शिकायत का विस्तृत विवरण">Detailed Description</label>
+                    <textarea id="compDesc" class="form-control" placeholder="Provide complete facts about the case..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="compFile" data-en="Attach Evidentiary Document / Photo (Optional)" data-hi="दस्तावेज़/फोटो संलग्न करें (वैकल्पिक)">Attach Evidentiary Document</label>
+                    <input type="file" id="compFile" class="form-control">
+                </div>
+
+                <button class="btn btn-primary" onclick="submitGrievance()" data-en="Submit Grievance" data-hi="शिकायत दर्ज करें">Submit Grievance</button>
+            </div>
+
+            <!-- Panel B: Grievance Status List & Tracker -->
+            <div id="citizenListPanel" class="panel d-none">
+                <div class="detail-grid">
+                    <!-- Left: My Grievances list -->
+                    <div>
+                        <h3 class="mb-4" data-en="My Submissions" data-hi="मेरे द्वारा दर्ज शिकायतें">My Submissions</h3>
+                        <div id="citizenGrievanceList" style="max-height: 500px; overflow-y: auto;">
+                            <!-- Dynamically loaded list of complaints -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Visual Tracking Stepper -->
+                    <div>
+                        <h3 class="mb-4" data-en="Live Tracking Timeline" data-hi="लाइव ट्रैकिंग टाइमलाइन">Live Tracking Timeline</h3>
+                        <div id="timelineCard" class="tracking-card">
+                            <div class="text-center text-muted py-5" id="timelineFallbackText">
+                                <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <p data-en="Select a complaint from the left to view the status timeline." data-hi="स्थिति टाइमलाइन देखने के लिए बाईं ओर से एक शिकायत का चयन करें।">Select a complaint from the left to view status timeline.</p>
+                            </div>
+                            <!-- Stepper loaded dynamically -->
+                            <div id="timelineStepper" class="timeline d-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3. SHO DASHBOARD ==================== -->
+        <section id="shoDashboard" class="d-none">
+            <!-- Stats overview cards -->
+            <div class="stats-container" id="shoStatsContainer">
+                <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Grievance list panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fa-solid fa-house-chimney-crack"></i> 
+                        <span id="shoStationTitle">Police Station Name</span>
+                    </h2>
+                    <div class="panel-actions">
+                        <button class="btn btn-accent btn-inline" onclick="window.print()">
+                            <i class="fa-solid fa-print"></i> <span data-en="Print Summary" data-hi="रिपोर्ट प्रिंट करें">Print Summary</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-en="Complaint ID" data-hi="शिकायत सं०">Complaint ID</th>
+                                <th data-en="Citizen Name" data-hi="शिकायतकर्ता">Citizen Name</th>
+                                <th data-en="Category" data-hi="श्रेणी">Category</th>
+                                <th data-en="Date Filed" data-hi="दर्ज तिथि">Date Filed</th>
+                                <th data-en="Status" data-hi="स्थिति">Status</th>
+                                <th data-en="Investigating Officer" data-hi="जाँच अधिकारी">Investigating Officer</th>
+                                <th data-en="Actions" data-hi="कार्यवाही">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shoTableBody">
+                            <!-- Dynamic Row Loading -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 4. INVESTIGATING OFFICER DASHBOARD ==================== -->
+        <section id="ioDashboard" class="d-none">
+            <!-- Stats overview cards -->
+            <div class="stats-container" id="ioStatsContainer">
+                <!-- Dynamic Stats -->
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fa-solid fa-clipboard-question"></i> 
+                        <span id="ioDashboardTitle">Investigating Officer Dashboard</span>
+                    </h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-en="Complaint ID" data-hi="शिकायत सं०">Complaint ID</th>
+                                <th data-en="Citizen Contact" data-hi="नागरिक संपर्क">Citizen Contact</th>
+                                <th data-en="Category / Details" data-hi="विवरण">Category / Details</th>
+                                <th data-en="Date Assigned" data-hi="आवंटन तिथि">Date Assigned</th>
+                                <th data-en="Status" data-hi="स्थिति">Status</th>
+                                <th data-en="Actions" data-hi="कार्यवाही">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ioTableBody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 5. SUPERINTENDENT OF POLICE DASHBOARD ==================== -->
+        <section id="spDashboard" class="d-none">
+            <!-- Global Metrics -->
+            <div class="stats-container" id="spStatsContainer">
+                <!-- Consolidated KPIs dynamically loaded -->
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4 class="chart-title" data-en="Complaints Distribution by Police Station" data-hi="थानावार शिकायतों का तुलनात्मक चार्ट">Complaints Distribution by Police Station</h4>
+                    <canvas id="spStationChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4 class="chart-title" data-en="Grievance Categories Distribution" data-hi="शिकायत श्रेणियों का वर्गीकरण चार्ट">Grievance Categories Distribution</h4>
+                    <canvas id="spCategoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Station Summary performance logs -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title" data-en="Thana-wise Performance Summary" data-hi="थानावार निस्तारण रिपोर्ट">Thana-wise Performance Summary</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-en="Police Station Name" data-hi="थाने का नाम">Police Station Name</th>
+                                <th data-en="Total Received" data-hi="कुल प्राप्त">Total Received</th>
+                                <th data-en="Pending assignment" data-hi="लंबित (नया)">Pending assignment</th>
+                                <th data-en="Under Investigation" data-hi="जांच के अधीन">Under Investigation</th>
+                                <th data-en="Resolved & Closed" data-hi="निस्तारित मामले">Resolved & Closed</th>
+                                <th data-en="Resolution Rate" data-hi="निस्तारण दर">Resolution Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spStationSummaryBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Master grievance search log -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title" data-en="District Grievance Log Ledger" data-hi="समस्त जनपद जनशिकायत रजिस्टर">District Grievance Log Ledger</h2>
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="spSearchInput" class="search-input" placeholder="Search by Complaint ID or Name..." oninput="handleSPSearch()">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-en="Complaint ID" data-hi="शिकायत सं०">Complaint ID</th>
+                                <th data-en="Thana" data-hi="थाना">Thana</th>
+                                <th data-en="Citizen Name" data-hi="शिकायतकर्ता">Citizen Name</th>
+                                <th data-en="Category" data-hi="श्रेणी">Category</th>
+                                <th data-en="Date Filed" data-hi="पंजीकरण तिथि">Date Filed</th>
+                                <th data-en="Investigating Officer" data-hi="जाँच अधिकारी">Investigating Officer</th>
+                                <th data-en="Status" data-hi="स्थिति">Status</th>
+                                <th data-en="Actions" data-hi="कार्यवाही">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spGrievanceTableBody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- 1. General Grievance Details Modal (Multi-purpose view details) -->
+    <div id="detailsModal" class="modal-backdrop">
+        <div class="modal-card" style="max-width: 750px;">
+            <div class="modal-header">
+                <h3 id="detailsModalTitle">Grievance Details</h3>
+                <button class="close-modal" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="detailsModalBody">
+                <!-- Dyn details -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-inline" onclick="closeModal('detailsModal')" data-en="Close" data-hi="बंद करें">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SHO IO Assignment Modal -->
+    <div id="assignIOModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 data-en="Assign Investigating Officer (IO)" data-hi="जाँच अधिकारी (IO) आवंटित करें">Assign Investigating Officer (IO)</h3>
+                <button class="close-modal" onclick="closeModal('assignIOModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="assignModalGrievanceId">
+                <div class="form-group">
+                    <label for="assignSelectIO" data-en="Select Investigating Officer" data-hi="जाँच अधिकारी का चयन करें">Select Investigating Officer</label>
+                    <select id="assignSelectIO" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="assignInstructions" data-en="Specific Instructions/Directions" data-hi="जाँच हेतु निर्देश">Specific Instructions/Directions</label>
+                    <textarea id="assignInstructions" class="form-control" placeholder="Enter directions or focus area for this investigation..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-inline" onclick="closeModal('assignIOModal')" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
+                <button class="btn btn-accent btn-inline" onclick="submitIOAssignment()" data-en="Assign IO & Transfer" data-hi="आवंटित करें">Assign IO & Transfer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. IO Investigation Report submission Modal -->
+    <div id="submitReportModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 data-en="Submit Final Investigation Report" data-hi="जाँच रिपोर्ट सबमिट करें">Submit Final Investigation Report</h3>
+                <button class="close-modal" onclick="closeModal('submitReportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reportModalGrievanceId">
+                <div class="form-group">
+                    <label for="ioReportDetail" data-en="Investigation Findings (Summary)" data-hi="जाँच निष्कर्षों का विवरण">Investigation Findings (Summary)</label>
+                    <textarea id="ioReportDetail" class="form-control" placeholder="Provide summary of findings, statement copies verified, actions taken..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ioReportFile" data-en="Upload Scanned Report (Optional)" data-hi="जाँच रिपोर्ट पीडीएफ अपलोड करें (वैकल्पिक)">Upload Scanned Report</label>
+                    <input type="file" id="ioReportFile" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-inline" onclick="closeModal('submitReportModal')" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
+                <button class="btn btn-primary btn-inline" onclick="submitInvestigationReport()" data-en="Submit Report" data-hi="रिपोर्ट सबमिट करें">Submit Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Citizen Feedback / Rating Modal -->
+    <div id="feedbackModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 data-en="Grievance Resolution Feedback" data-hi="शिकायत निवारण फीडबैक">Grievance Resolution Feedback</h3>
+                <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="feedbackModalGrievanceId">
+                <div class="form-group">
+                    <label data-en="Rate the Resolution Experience" data-hi="निवारण गुणवत्ता रेटिंग">Rate the Resolution Experience</label>
+                    <div style="font-size: 2rem; color: var(--accent-color); display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0;">
+                        <i class="fa-regular fa-star star-btn" onclick="rateStar(1)" style="cursor: pointer;"></i>
+                        <i class="fa-regular fa-star star-btn" onclick="rateStar(2)" style="cursor: pointer;"></i>
+                        <i class="fa-regular fa-star star-btn" onclick="rateStar(3)" style="cursor: pointer;"></i>
+                        <i class="fa-regular fa-star star-btn" onclick="rateStar(4)" style="cursor: pointer;"></i>
+                        <i class="fa-regular fa-star star-btn" onclick="rateStar(5)" style="cursor: pointer;"></i>
+                    </div>
+                    <input type="hidden" id="feedbackRatingValue" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="feedbackComments" data-en="Citizen Remarks" data-hi="नागरिक की टिप्पणी">Citizen Remarks</label>
+                    <textarea id="feedbackComments" class="form-control" placeholder="Share your experience regarding time taken, behaviors or outcome..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-inline" onclick="closeModal('feedbackModal')" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
+                <button class="btn btn-accent btn-inline" onclick="submitCitizenFeedback()" data-en="Submit Feedback" data-hi="फीडबैक भेजें">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DEMO QUICK-ACCESS PANEL ==================== -->
+    <div class="demo-switcher" id="demoSwitcher">
+        <div class="demo-title">DEMO QUICK SWITCH</div>
+        <div class="demo-btn-group">
+            <button class="demo-btn" onclick="quickLogin('citizen')" title="Citizen View">Citizen</button>
+            <button class="demo-btn" onclick="quickLogin('sho')" title="SHO Kotwali">SHO (Kotwali)</button>
+            <button class="demo-btn" onclick="quickLogin('io')" title="IO Inspector Amit">IO (Amit)</button>
+            <button class="demo-btn" onclick="quickLogin('sp')" title="District SP Dashboard">SP (Admin)</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Application Logic -->
+<script src="app.js?v=2"></script>
+</body>
+</html>
