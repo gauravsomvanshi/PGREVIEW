@@ -133,8 +133,31 @@ const SEED_GRIEVANCES = [
     }
 ];
 
+// Mock Citizens Database
+const SEED_CITIZENS = [
+    {
+        phone: "9876543210",
+        password: "password123",
+        name: "Rohan Varma",
+        email: "rohan@gmail.com",
+        gender: "Male",
+        aadhaar: "123456789012",
+        address: "House 45, Sector 4, Kotwali Road"
+    },
+    {
+        phone: "9123456789",
+        password: "password123",
+        name: "Preeti Sharma",
+        email: "preeti@yahoo.com",
+        gender: "Female",
+        aadhaar: "987654321098",
+        address: "Flat 102, Cantt Residential Area"
+    }
+];
+
 // Global variables for active sessions
 let grievances = [];
+let citizens = [];
 let currentSession = { role: 'guest', id: null, details: null };
 let currentLanguage = 'en';
 let chartInstanceStation = null;
@@ -157,10 +180,18 @@ function initDatabase() {
     } else {
         grievances = JSON.parse(localStorage.getItem('grievance_db'));
     }
+
+    if (!localStorage.getItem('citizen_db')) {
+        localStorage.setItem('citizen_db', JSON.stringify(SEED_CITIZENS));
+        citizens = SEED_CITIZENS;
+    } else {
+        citizens = JSON.parse(localStorage.getItem('citizen_db'));
+    }
 }
 
 function saveDatabase() {
     localStorage.setItem('grievance_db', JSON.stringify(grievances));
+    localStorage.setItem('citizen_db', JSON.stringify(citizens));
 }
 
 // 2. Language & Bilingual Interface Management
@@ -288,6 +319,7 @@ function showLoginForm(role) {
     
     // Hide all forms first
     document.getElementById('citizenLoginForm').classList.add('d-none');
+    document.getElementById('citizenSignUpForm').classList.add('d-none');
     document.getElementById('shoLoginForm').classList.add('d-none');
     document.getElementById('ioLoginForm').classList.add('d-none');
     document.getElementById('spLoginForm').classList.add('d-none');
@@ -299,20 +331,108 @@ function showLoginForm(role) {
     document.getElementById('loginFormsWrapper').scrollIntoView({ behavior: 'smooth' });
 }
 
-function hideLoginForm() {
-    document.getElementById('loginFormsWrapper').classList.add('d-none');
+function showCitizenSignUp() {
+    document.getElementById('loginFormsWrapper').classList.remove('d-none');
+    
+    // Hide all forms first
+    document.getElementById('citizenLoginForm').classList.add('d-none');
+    document.getElementById('citizenSignUpForm').classList.add('d-none');
+    document.getElementById('shoLoginForm').classList.add('d-none');
+    document.getElementById('ioLoginForm').classList.add('d-none');
+    document.getElementById('spLoginForm').classList.add('d-none');
+
+    // Show sign up form
+    document.getElementById('citizenSignUpForm').classList.remove('d-none');
+
+    // Scroll to form smoothly
+    document.getElementById('loginFormsWrapper').scrollIntoView({ behavior: 'smooth' });
 }
 
-// 4. Session Controls (Login & Logout)
+function hideLoginForm() {
+    document.getElementById('loginFormsWrapper').classList.add('d-none');
+    document.getElementById('citizenSignUpForm').classList.add('d-none');
+}
+
 function loginAsCitizen() {
     const phone = document.getElementById('citizenPhone').value.trim();
+    const password = document.getElementById('citizenPassword').value;
+
     if (phone.length < 10) {
         alert(getTxt("Please enter a valid 10-digit mobile number.", "कृपया वैध 10-अंकीय मोबाइल नंबर डालें।"));
         return;
     }
+    if (!password) {
+        alert(getTxt("Please enter your password.", "कृपया अपना पासवर्ड डालें।"));
+        return;
+    }
+
+    const citizen = citizens.find(c => c.phone === phone && c.password === password);
+    if (!citizen) {
+        alert(getTxt("Invalid mobile number or password.", "अमान्य मोबाइल नंबर या पासवर्ड।"));
+        return;
+    }
     
-    currentSession = { role: 'citizen', id: phone, details: { phone: phone } };
+    currentSession = { role: 'citizen', id: phone, details: citizen };
     afterLoginSuccess();
+}
+
+function registerCitizen() {
+    const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const gender = document.getElementById('regGender').value;
+    const aadhaar = document.getElementById('regAadhaar').value.trim();
+    const address = document.getElementById('regAddress').value.trim();
+
+    if (!name || !phone || !password || !aadhaar || !address) {
+        alert(getTxt("Please fill in all required fields.", "कृपया सभी आवश्यक क्षेत्रों को भरें।"));
+        return;
+    }
+
+    if (phone.length < 10) {
+        alert(getTxt("Mobile number must be at least 10 digits.", "मोबाइल नंबर कम से कम 10 अंकों का होना चाहिए।"));
+        return;
+    }
+
+    if (password.length < 6) {
+        alert(getTxt("Password must be at least 6 characters long.", "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।"));
+        return;
+    }
+
+    // Check if phone already registered
+    const existing = citizens.find(c => c.phone === phone);
+    if (existing) {
+        alert(getTxt("This mobile number is already registered.", "यह मोबाइल नंबर पहले से पंजीकृत है।"));
+        return;
+    }
+
+    const newCitizen = {
+        name: name,
+        phone: phone,
+        email: email,
+        password: password,
+        gender: gender,
+        aadhaar: aadhaar,
+        address: address
+    };
+
+    citizens.push(newCitizen);
+    saveDatabase();
+
+    alert(getTxt("Registration successful! You can now log in.", "पंजीकरण सफल! अब आप लॉगिन कर सकते हैं।"));
+
+    // Reset fields
+    document.getElementById('regName').value = '';
+    document.getElementById('regPhone').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regPassword').value = '';
+    document.getElementById('regGender').value = 'Male';
+    document.getElementById('regAadhaar').value = '';
+    document.getElementById('regAddress').value = '';
+
+    // Switch back to login form
+    showLoginForm('citizen');
 }
 
 function loginAsSHO() {
@@ -358,7 +478,8 @@ function loginAsSP() {
 
 function quickLogin(role) {
     if (role === 'citizen') {
-        currentSession = { role: 'citizen', id: '9876543210', details: { phone: '9876543210' } };
+        const citizen = citizens.find(c => c.phone === '9876543210');
+        currentSession = { role: 'citizen', id: '9876543210', details: citizen || { name: "Rohan Varma", phone: "9876543210" } };
     } else if (role === 'sho') {
         currentSession = { role: 'sho', id: 'st-kotwali', details: CONFIG.stations.find(s => s.id === 'st-kotwali') };
     } else if (role === 'io') {
@@ -381,7 +502,7 @@ function afterLoginSuccess() {
     // Update Profile Tag Text
     const profileText = document.getElementById('profileRoleText');
     if (currentSession.role === 'citizen') {
-        profileText.innerText = getTxt(`Citizen: ${currentSession.id}`, `नागरिक: ${currentSession.id}`);
+        profileText.innerText = getTxt(`Citizen: ${currentSession.details.name}`, `नागरिक: ${currentSession.details.name}`);
         showCitizenSection('lodge');
         document.getElementById('citizenDashboard').classList.remove('d-none');
         renderCitizenDashboard();

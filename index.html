@@ -91,12 +91,67 @@
             <div id="loginFormsWrapper" class="mt-4 d-none">
                 <!-- Citizen Login Form -->
                 <div id="citizenLoginForm" class="form-card d-none">
-                    <h3 class="form-title" data-en="Citizen Access" data-hi="नागरिक पहुंच">Citizen Access</h3>
+                    <h3 class="form-title" data-en="Citizen Login" data-hi="नागरिक लॉगिन">Citizen Login</h3>
                     <div class="form-group">
                         <label for="citizenPhone" data-en="Mobile Number" data-hi="मोबाइल नंबर">Mobile Number</label>
                         <input type="tel" id="citizenPhone" class="form-control" placeholder="Enter 10-digit mobile" required>
                     </div>
-                    <button class="btn btn-primary" onclick="loginAsCitizen()" data-en="Enter Portal" data-hi="पोर्टल में प्रवेश करें">Enter Portal</button>
+                    <div class="form-group">
+                        <label for="citizenPassword" data-en="Password" data-hi="पासवर्ड">Password</label>
+                        <input type="password" id="citizenPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAsCitizen()" data-en="Login" data-hi="लॉगिन करें">Login</button>
+                    <div class="text-center mt-4">
+                        <a href="javascript:void(0)" onclick="showCitizenSignUp()" style="font-weight: 600; text-decoration: underline;" data-en="Don't have an account? Sign Up" data-hi="खाता नहीं है? पंजीकरण करें">Don't have an account? Sign Up</a>
+                    </div>
+                    <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
+                </div>
+
+                <!-- Citizen Sign Up Form -->
+                <div id="citizenSignUpForm" class="form-card d-none" style="max-width: 600px;">
+                    <h3 class="form-title" data-en="Citizen Registration" data-hi="नागरिक पंजीकरण">Citizen Registration</h3>
+                    <div class="detail-grid">
+                        <div class="form-group">
+                            <label for="regName" data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+                            <input type="text" id="regName" class="form-control" placeholder="E.g., Ramesh Kumar" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPhone" data-en="Mobile Number" data-hi="मोबाइल नंबर">Mobile Number</label>
+                            <input type="tel" id="regPhone" class="form-control" placeholder="Enter 10-digit mobile" required>
+                        </div>
+                    </div>
+                    <div class="detail-grid mt-4">
+                        <div class="form-group">
+                            <label for="regEmail" data-en="Email Address (Optional)" data-hi="ईमेल (वैकल्पिक)">Email Address</label>
+                            <input type="email" id="regEmail" class="form-control" placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword" data-en="Choose Password" data-hi="पासवर्ड चुनें">Choose Password</label>
+                            <input type="password" id="regPassword" class="form-control" placeholder="Min 6 characters" required>
+                        </div>
+                    </div>
+                    <div class="detail-grid mt-4">
+                        <div class="form-group">
+                            <label for="regGender" data-en="Gender" data-hi="लिंग">Gender</label>
+                            <select id="regGender" class="form-control">
+                                <option value="Male" data-en="Male" data-hi="पुरुष">Male</option>
+                                <option value="Female" data-en="Female" data-hi="महिला">Female</option>
+                                <option value="Other" data-en="Other" data-hi="अन्य">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="regAadhaar" data-en="Aadhaar / ID Card Number" data-hi="आधार / पहचान पत्र संख्या">Aadhaar / ID Card Number</label>
+                            <input type="text" id="regAadhaar" class="form-control" placeholder="12-digit Aadhaar / ID" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="regAddress" data-en="Residential Address" data-hi="आवासीय पता">Residential Address</label>
+                        <textarea id="regAddress" class="form-control" placeholder="Enter your complete home address..." required></textarea>
+                    </div>
+                    <button class="btn btn-accent" onclick="registerCitizen()" data-en="Register & Sign Up" data-hi="पंजीकरण पूर्ण करें">Register & Sign Up</button>
+                    <div class="text-center mt-4">
+                        <a href="javascript:void(0)" onclick="showLoginForm('citizen')" style="font-weight: 600; text-decoration: underline;" data-en="Already have an account? Login" data-hi="पहले से पंजीकृत हैं? लॉगिन करें">Already have an account? Login</a>
+                    </div>
                     <button class="btn btn-secondary mt-4" onclick="hideLoginForm()" data-en="Back" data-hi="पीछे जाएं">Back</button>
                 </div>
 
@@ -515,6 +570,6 @@
 </div>
 
 <!-- Application Logic -->
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
