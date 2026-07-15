@@ -1360,7 +1360,11 @@ function renderSPCharts() {
     chartInstanceCategory = new Chart(ctxCategory, {
         type: 'doughnut',
         data: {
-            labels: categories.map(c => getTxt(c.split(' / ')[0], c.split(' / ')[1])),
+            labels: categories.map(c => {
+                if (!c) return getTxt('Other', 'अन्य');
+                const parts = c.split(' / ');
+                return getTxt(parts[0], parts[1] || parts[0]);
+            }),
             datasets: [{
                 data: dataCategory,
                 backgroundColor: [
